@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import {
     Box,
     Typography,
@@ -12,61 +11,16 @@ import {
     Button,
     SelectChangeEvent
 } from '@mui/material';
+import usePokemonTypes from "../hooks/usePokemonTypes";
+import usePokemons, {Pokemon, PokemonListResponse} from '../hooks/usePokemons';
 import useCaughtPokemons from "../hooks/useCaughtPokemon";
-
-export interface PokemonType {
-    name: string;
-    url: string;
-}
-
-interface Pokemon {
-    name: string;
-    url: string;
-}
-
-export interface TypeResponse {
-    results: PokemonType[];
-}
-
-export interface PokemonListResponse {
-    results: Pokemon[];
-}
+import axios from "axios";
 
 const PokemonList: React.FC = () => {
-    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-    const [types, setTypes] = useState<PokemonType[]>([]);
-    const [selectedType, setSelectedType] = useState<string>('');
+    const { pokemons, setPokemons, error: pokemonsError } = usePokemons();
+    const { types, error: typesError } = usePokemonTypes();
     const { caughtPokemons, catchPokemon, releasePokemon } = useCaughtPokemons();
-
-    useEffect(() => {
-        const fetchPokemons = async () => {
-            try {
-                const response = await axios.get<PokemonListResponse>('https://pokeapi.co/api/v2/pokemon', {
-                    withCredentials: false
-                });
-                setPokemons(response.data.results);
-            } catch (error) {
-                console.error('Failed to fetch pokemons:', error);
-            }
-        };
-
-        fetchPokemons();
-    }, []);
-
-    useEffect(() => {
-        const fetchTypes = async () => {
-            try {
-                const response = await axios.get<TypeResponse>('https://pokeapi.co/api/v2/type', {
-                    withCredentials: false
-                });
-                setTypes(response.data.results);
-            } catch (error) {
-                console.error('Failed to fetch types:', error);
-            }
-        };
-
-        fetchTypes();
-    }, []);
+    const [selectedType, setSelectedType] = useState<string>('');
 
     const handleTypeChange = async (event: SelectChangeEvent<string>) => {
         const type = event.target.value as string;
@@ -89,6 +43,10 @@ const PokemonList: React.FC = () => {
             }
         }
     };
+
+    if (pokemonsError || typesError) {
+        return <Typography variant="h6" color="error">{pokemonsError || typesError}</Typography>;
+    }
 
     return (
         <Box sx={{ flexGrow: 1, p: 2 }}>
