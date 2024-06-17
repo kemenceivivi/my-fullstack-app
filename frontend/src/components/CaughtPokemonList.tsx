@@ -9,22 +9,31 @@ import {
     InputLabel,
     FormControl,
     Select,
-    MenuItem
+    MenuItem,
+    CircularProgress
 } from '@mui/material';
 import usePokemonTypes from '../hooks/usePokemonTypes';
 import useCaughtPokemons from "../hooks/useCaughtPokemon";
 
 const CaughtPokemonList: React.FC = () => {
-    const { caughtPokemons, releasePokemon } = useCaughtPokemons();
-    const { types, error } = usePokemonTypes();
+    const { caughtPokemons, releasePokemon, loading, error } = useCaughtPokemons();
+    const { types, error: typesError } = usePokemonTypes();
     const [selectedType, setSelectedType] = useState('');
 
     const handleTypeChange = (event: SelectChangeEvent<string>) => {
         setSelectedType(event.target.value);
     };
 
-    if (error) {
-        return <Typography variant="h6" color="error">{error}</Typography>;
+    if (error || typesError) {
+        return <Typography variant="h6" color="error">{error || typesError}</Typography>;
+    }
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
     }
 
     return (

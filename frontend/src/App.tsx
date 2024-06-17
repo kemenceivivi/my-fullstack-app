@@ -4,9 +4,10 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { verifySession } from './services/authService';
 import Header from './components/Header';
 import LoginPage from "./pages/LoginPage";
-import {ReactNode, useEffect, useState} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import PokemonList from "./components/PokemonList";
 import CaughtPokemonList from "./components/CaughtPokemonList";
+import { CircularProgress, Box } from '@mui/material';
 
 const App = () => {
   return (
@@ -36,7 +37,11 @@ const AppRoutes = () => {
   }, [setIsAuthenticated]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+          <CircularProgress />
+        </Box>
+    );
   }
 
   return (
@@ -56,14 +61,14 @@ const AppRoutes = () => {
           <Route path="/dashboard" element={
             <ProtectedRoute type="private"><PokemonList /></ProtectedRoute>
           } />
-          <Route path="/caught" element={<ProtectedRoute type="private"> <CaughtPokemonList/></ProtectedRoute>} />
+          <Route path="/caught" element={<ProtectedRoute type="private"> <CaughtPokemonList /></ProtectedRoute>} />
           <Route path="/" element={<Navigate replace to="/dashboard" />} />
         </Routes>
       </Router>
   );
 };
 
-const ProtectedRoute = ({ children, type }: { children:ReactNode, type: "private" | "guest" }) => {
+const ProtectedRoute = ({ children, type }: { children: ReactNode, type: "private" | "guest" }) => {
   const { isAuthenticated } = useAuth();
 
   if (type === "private" && !isAuthenticated) {

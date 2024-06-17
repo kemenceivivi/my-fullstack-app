@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { PokemonType, TypeResponse } from '../components/PokemonList';
+import {Pokemon, TypeResponse} from "../types/types";
 
 const usePokemonTypes = () => {
-    const [types, setTypes] = useState<PokemonType[]>([]);
+    const [types, setTypes] = useState<Pokemon[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const fetchTypes = async () => {
