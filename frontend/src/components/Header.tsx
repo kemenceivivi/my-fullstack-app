@@ -39,6 +39,9 @@ const Header = () => {
                 )}
                 {isAuthenticated && (
                     <>
+                        <Button color="inherit" component={RouterLink} to="/caught">
+                            Caught Pokemons
+                        </Button>
                         <Button color="inherit" component={RouterLink} to="/dashboard">
                             Dashboard
                         </Button>

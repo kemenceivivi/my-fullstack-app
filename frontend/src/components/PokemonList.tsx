@@ -12,8 +12,9 @@ import {
     Button,
     SelectChangeEvent
 } from '@mui/material';
+import useCaughtPokemons from "../hooks/useCaughtPokemon";
 
-interface PokemonType {
+export interface PokemonType {
     name: string;
     url: string;
 }
@@ -23,11 +24,11 @@ interface Pokemon {
     url: string;
 }
 
-interface TypeResponse {
+export interface TypeResponse {
     results: PokemonType[];
 }
 
-interface PokemonListResponse {
+export interface PokemonListResponse {
     results: Pokemon[];
 }
 
@@ -35,12 +36,12 @@ const PokemonList: React.FC = () => {
     const [pokemons, setPokemons] = useState<Pokemon[]>([]);
     const [types, setTypes] = useState<PokemonType[]>([]);
     const [selectedType, setSelectedType] = useState<string>('');
-    const [caughtPokemons, setCaughtPokemons] = useState<string[]>([]);
+    const { caughtPokemons, catchPokemon, releasePokemon } = useCaughtPokemons();
 
     useEffect(() => {
         const fetchPokemons = async () => {
             try {
-                const response = await axios.get<PokemonListResponse>('https://pokeapi.co/api/v2/pokemon?limit=10', {
+                const response = await axios.get<PokemonListResponse>('https://pokeapi.co/api/v2/pokemon', {
                     withCredentials: false
                 });
                 setPokemons(response.data.results);
@@ -89,42 +90,6 @@ const PokemonList: React.FC = () => {
         }
     };
 
-    const handleCatchPokemon = async (pokemonName: string) => {
-        try {
-            await axios.post('http://localhost:5000/api/pokemon/catch', { pokemonId: pokemonName }, { withCredentials: true });
-            setCaughtPokemons([...caughtPokemons, pokemonName]);
-        } catch (error) {
-            console.error('Failed to catch pokemon:', error);
-        }
-    };
-
-    const handleReleasePokemon = async (pokemonName: string) => {
-        try {
-            await axios.post('http://localhost:5000/api/pokemon/release', { pokemonId: pokemonName }, { withCredentials: true });
-            setCaughtPokemons(caughtPokemons.filter(pokemon => pokemon !== pokemonName));
-        } catch (error) {
-            console.error('Failed to release pokemon:', error);
-        }
-    };
-
-    const fetchCaughtPokemons = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/api/pokemon/caught', { withCredentials: true });
-            const data = response.data;
-            if (Array.isArray(data)) {
-                setCaughtPokemons(data.map((pokemon: { pokemonId: string }) => pokemon.pokemonId));
-            } else {
-                console.error('Unexpected response data:', data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch caught pokemons:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchCaughtPokemons();
-    }, []);
-
     return (
         <Box sx={{ flexGrow: 1, p: 2 }}>
             <Typography variant="h4" gutterBottom>
@@ -155,11 +120,11 @@ const PokemonList: React.FC = () => {
                         <Card variant="outlined" sx={{ p: 2 }}>
                             <Typography variant="h6">{pokemon.name}</Typography>
                             {caughtPokemons.includes(pokemon.name) ? (
-                                <Button variant="contained" color="secondary" onClick={() => handleReleasePokemon(pokemon.name)}>
+                                <Button variant="contained" color="secondary" onClick={() => releasePokemon(pokemon.name)}>
                                     Release
                                 </Button>
                             ) : (
-                                <Button variant="contained" color="primary" onClick={() => handleCatchPokemon(pokemon.name)}>
+                                <Button variant="contained" color="primary" onClick={() => catchPokemon(pokemon.name)}>
                                     Catch
                                 </Button>
                             )}

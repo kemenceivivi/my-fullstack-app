@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Dashboard from "./components/Dashboard";
 import RegistrationPage from "./pages/RegistrationPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { verifySession } from './services/authService';
@@ -7,6 +6,7 @@ import Header from './components/Header';
 import LoginPage from "./pages/LoginPage";
 import {ReactNode, useEffect, useState} from "react";
 import PokemonList from "./components/PokemonList";
+import CaughtPokemonList from "./components/CaughtPokemonList";
 
 const App = () => {
   return (
@@ -54,11 +54,9 @@ const AppRoutes = () => {
             </ProtectedRoute>
           } />
           <Route path="/dashboard" element={
-            <ProtectedRoute type="private">
-              <Dashboard />
-            </ProtectedRoute>
+            <ProtectedRoute type="private"><PokemonList /></ProtectedRoute>
           } />
-          <Route path="/pokemons" element={<ProtectedRoute type="private"><PokemonList /></ProtectedRoute>} />
+          <Route path="/caught" element={<ProtectedRoute type="private"> <CaughtPokemonList/></ProtectedRoute>} />
           <Route path="/" element={<Navigate replace to="/dashboard" />} />
         </Routes>
       </Router>
