@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+/**
+ * A hook to fetch and manage caught Pokemon.
+ * @returns {object} An object containing the caughtPokemons array, catchPokemon and releasePokemon functions, loading
+ * state, and error state.
+ */
+
 const useCaughtPokemons = () => {
     const [caughtPokemons, setCaughtPokemons] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    /**
+     * Fetches the list of caught Pokemon from the API.
+     * @async
+     */
     const fetchCaughtPokemons = async () => {
         try {
             const response = await axios.get('http://localhost:5000/api/pokemon/caught', { withCredentials: true });
@@ -27,6 +37,10 @@ const useCaughtPokemons = () => {
         fetchCaughtPokemons();
     }, []);
 
+    /**
+     * Catches a Pokemon by adding it to the caughtPokemons array.
+     * @param {string} pokemonName - The name of the Pokemon to catch.
+     */
     const catchPokemon = async (pokemonName: string) => {
         try {
             await axios.post('http://localhost:5000/api/pokemon/catch', { pokemonId: pokemonName }, { withCredentials: true });
@@ -37,6 +51,10 @@ const useCaughtPokemons = () => {
         }
     };
 
+    /**
+     * Releases a Pokemon by removing it from the caughtPokemons array.
+     * @param {string} pokemonName - The name of the Pokemon to release.
+     */
     const releasePokemon = async (pokemonName: string) => {
         try {
             await axios.post('http://localhost:5000/api/pokemon/release', { pokemonId: pokemonName }, { withCredentials: true });

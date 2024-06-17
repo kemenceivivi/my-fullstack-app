@@ -12,9 +12,15 @@ import {
     SelectChangeEvent
 } from '@mui/material';
 import usePokemonTypes from "../hooks/usePokemonTypes";
-import usePokemons, {Pokemon, PokemonListResponse} from '../hooks/usePokemons';
 import useCaughtPokemons from "../hooks/useCaughtPokemon";
 import axios from "axios";
+import usePokemons from "../hooks/usePokemons";
+import {Pokemon, PokemonListResponse} from "../types/types";
+
+/**
+ * PokemonList component for displaying a list of Pokemon with filtering by type and catch/release functionality.
+ * @component
+ */
 
 const PokemonList: React.FC = () => {
     const { pokemons, setPokemons, error: pokemonsError } = usePokemons();

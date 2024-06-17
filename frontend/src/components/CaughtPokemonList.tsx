@@ -15,6 +15,11 @@ import {
 import usePokemonTypes from '../hooks/usePokemonTypes';
 import useCaughtPokemons from "../hooks/useCaughtPokemon";
 
+/**
+ * A component that displays a list of caught Pokemon and allows the user to release them.
+ * @component
+ */
+
 const CaughtPokemonList: React.FC = () => {
     const { caughtPokemons, releasePokemon, loading, error } = useCaughtPokemons();
     const { types, error: typesError } = usePokemonTypes();

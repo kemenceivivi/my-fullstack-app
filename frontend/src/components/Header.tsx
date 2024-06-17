@@ -7,9 +7,20 @@ import Button from '@mui/material/Button';
 import { useAuth } from '../context/AuthContext';
 import { logout } from '../services/authService';
 
+/**
+ * Header component that displays navigation links and logout button based on authentication state.
+ * @component
+ */
+
 const Header = () => {
     const { isAuthenticated, setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
+
+    /**
+     * Handles user logout by calling the logout service, updating authentication state,
+     * and navigating to the login page.
+     * @async
+     */
 
     const handleLogout = async () => {
         try {
