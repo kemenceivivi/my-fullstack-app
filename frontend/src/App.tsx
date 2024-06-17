@@ -6,6 +6,7 @@ import { verifySession } from './services/authService';
 import Header from './components/Header';
 import LoginPage from "./pages/LoginPage";
 import {ReactNode, useEffect, useState} from "react";
+import PokemonList from "./components/PokemonList";
 
 const App = () => {
   return (
@@ -57,7 +58,7 @@ const AppRoutes = () => {
               <Dashboard />
             </ProtectedRoute>
           } />
-
+          <Route path="/pokemons" element={<ProtectedRoute type="private"><PokemonList /></ProtectedRoute>} />
           <Route path="/" element={<Navigate replace to="/dashboard" />} />
         </Routes>
       </Router>
