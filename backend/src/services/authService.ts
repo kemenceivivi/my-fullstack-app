@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
-const SECRET_KEY: string = `${process.env.SECRET_KEY}`;
+const SECRET_KEY: string = process.env.SECRET_KEY || 'default_secret_key';
 
 export const saltRounds = 10;
 

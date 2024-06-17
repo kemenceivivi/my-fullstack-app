@@ -14,7 +14,6 @@ export interface LoginRequest {
 
 export interface LoginResponse {
     status: number;
-    token: string;
     username: string;
     message?: string;
 }
@@ -29,4 +28,13 @@ export interface User {
     email: string;
     username: string;
     password: string;
+}
+
+export interface ApiErrorModel {
+    status: number;
+    message: string;
+}
+
+export interface ApiErrorResModel {
+    message: string;
 }
