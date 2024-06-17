@@ -69,7 +69,19 @@ export const userController = {
         }
     },
 
-
+    async logout(req: Request, res: Response, next: NextFunction) {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+        res.status(200).json({ message: 'Successfully logged out' });
+    }
 };
 
 

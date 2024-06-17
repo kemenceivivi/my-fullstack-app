@@ -1,35 +1,79 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Dashboard from "./components/Dashboard";
+import RegistrationPage from "./pages/RegistrationPage";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { verifySession } from './services/authService';
+import Header from './components/Header';
+import LoginPage from "./pages/LoginPage";
+import {ReactNode, useEffect, useState} from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  return (
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+  );
+};
+
+const AppRoutes = () => {
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        await verifySession();
+        setIsAuthenticated(true);
+      } catch (error) {
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+  }, [setIsAuthenticated]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/register" element={
+            <ProtectedRoute type="guest">
+              <RegistrationPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/login" element={
+            <ProtectedRoute type="guest">
+              <LoginPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute type="private">
+              <Dashboard />
+            </ProtectedRoute>
+          } />
 
-export default App
+          <Route path="/" element={<Navigate replace to="/dashboard" />} />
+        </Routes>
+      </Router>
+  );
+};
+
+const ProtectedRoute = ({ children, type }: { children:ReactNode, type: "private" | "guest" }) => {
+  const { isAuthenticated } = useAuth();
+
+  if (type === "private" && !isAuthenticated) {
+    return <Navigate replace to="/login" />;
+  } else if (type === "guest" && isAuthenticated) {
+    return <Navigate replace to="/dashboard" />;
+  }
+
+  return <>{children}</>;
+};
+
+export default App;
