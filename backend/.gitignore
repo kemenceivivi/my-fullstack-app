@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules/
+
+# IDE and editors
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+.env
+
+# Build output
+/dist
